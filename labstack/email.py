@@ -4,6 +4,13 @@ import requests
 import json
 from .common import API_URL
 
+def _email_file_from_path(path):
+  with open(path, 'rb') as file:
+    return {
+      'name': os.path.basename(path),
+      'content': base64.b64encode(file.read()).decode('utf-8')
+    }
+
 class _Email():
   def __init__(self, interceptor):
     self.path = '/email'
@@ -11,10 +18,11 @@ class _Email():
     
   def send(self, message):
     message._add_files()
-    r = requests.post(API_URL + self.path, auth=self.interceptor, data=message.toJSON())
+    r = requests.post(API_URL + self.path, auth=self.interceptor, data=message.to_json())
+    data = r.json()
     if not 200 <= r.status_code < 300:
-      response = r.json()
-      raise EmailError(response['code'], r['message'])
+      raise EmailError(data['code'], data['message'])
+    return EmailMessage.from_json(data) 
 
 class EmailMessage():
   def __init__(self, to, sender, subject):
@@ -40,7 +48,7 @@ class EmailMessage():
   def add_attachment(self, path):
     self.attachments.append(path)
 
-  def toJSON(self):
+  def to_json(self):
     return json.dumps({
       'to': self.to,
       'from': self.sender,
@@ -50,13 +58,14 @@ class EmailMessage():
       'attachments': self._attachments
     })
 
-def _email_file_from_path(path):
-  with open(path, 'rb') as file:
-    return {
-      'name': os.path.basename(path),
-      'content': base64.b64encode(file.read()).decode('utf-8')
-    }
-
+  @classmethod
+  def from_json(self, message):
+    em = EmailMessage(message['to'], message['from'], message['subject'])
+    em.id = message['id']
+    em.time = message['time']
+    em.status = message['status']
+    return em
+    
 class EmailError(Exception):
   def __init__(self, code, message):
     self.code = code

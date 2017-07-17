@@ -5,3 +5,5 @@ pip-selfcheck.json
 .Python
 .DS_Store
 __pycache__
+dist
+*.egg-info
