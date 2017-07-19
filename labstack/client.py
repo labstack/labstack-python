@@ -1,6 +1,7 @@
 import requests
 from .email import _Email
 from .log import _Log
+from .store import _Store
 
 class Client():
   def __init__(self, api_key):
@@ -16,6 +17,9 @@ class Client():
     log.app_id = self.app_id
     log.app_name = self.app_name
     return log
+  
+  def store(self):
+    return _Store(self.interceptor)
 
 class _Interceptor(requests.auth.AuthBase):
   def __init__(self, api_key):
