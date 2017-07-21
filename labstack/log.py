@@ -8,19 +8,19 @@ import requests
 import arrow
 from .common import API_URL
 
-LevelDebug = 0
-LevelInfo = 1
-LevelWarn = 2
-LevelError = 3
-LevelFatal = 4
-LevelOff = 5
+LEVEL_DEBUG = 0
+LEVEL_INFO = 1
+LEVEL_WARN = 2
+LEVEL_ERROR = 3
+LEVEL_FATAL = 4
+LEVEL_OFF = 5
 
 levels = {
-	LevelDebug: "DEBUG",
-	LevelInfo:  "INFO",
-	LevelWarn:  "WARN",
-	LevelError: "ERROR",
-	LevelFatal: "FATAL",
+	LEVEL_DEBUG: "DEBUG",
+	LEVEL_INFO:  "INFO",
+	LEVEL_WARN:  "WARN",
+	LEVEL_ERROR: "ERROR",
+	LEVEL_FATAL: "FATAL",
 }
 
 class _Log():
@@ -32,13 +32,14 @@ class _Log():
     self.app_id = ''
     self.app_name = '' 
     self.tags = []
-    self.level = LevelInfo
+    self.level = LEVEL_INFO
     self.batch_size = 60
     self.dispatch_interval = 60
 
   async def _schedule(self):
-    await self._dispatch()
-    await asyncio.sleep(self.dispatch_interval)
+    while True:
+      await self._dispatch()
+      await asyncio.sleep(self.dispatch_interval)
   
   async def _dispatch(self):
     if len(self.entries) == 0:
@@ -48,21 +49,22 @@ class _Log():
     if not 200 <= r.status_code < 300:
       data = r.json()
       raise LogError(data['code'], data['message'])
+    self.entries.clear()
 
   def debug(self, format, *argv):
-    self._log(LevelDebug, format, *argv)
+    self._log(LEVEL_DEBUG, format, *argv)
 
   def info(self, format, *argv):
-    self._log(LevelInfo, format, *argv)
+    self._log(LEVEL_INFO, format, *argv)
     
   def warn(self, format, *argv):
-    self._log(LevelWarn, format, *argv)
+    self._log(LEVEL_WARN, format, *argv)
   
   def error(self, format, *argv):
-    self._log(LevelError, format, *argv)
+    self._log(LEVEL_ERROR, format, *argv)
     
   def fatal(self, format, *argv):
-    self._log(LevelFatal, format, *argv)
+    self._log(LEVEL_FATAL, format, *argv)
 
   def _log(self, level, format, *argv):
     if level < self.level:
@@ -80,7 +82,7 @@ class _Log():
 		  'app_id': self.app_id,
 		  'app_name': self.app_name,
 		  'tags': self.tags,
-		  'level': levels[self.level],
+		  'level': levels[level],
 		  'message': message,
     })
 

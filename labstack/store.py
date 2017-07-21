@@ -39,11 +39,13 @@ class _Store():
     entry = StoreEntry(key, value)
     r = requests.put(API_URL + self.path + '/' + key, auth=self.interceptor, data=entry.to_json())
     if not 200 <= r.status_code < 300:
+      data = r.json()
       raise StoreError(data['code'], data['message'])
 
   def delete(self, key):
     r = requests.delete(API_URL + self.path + '/' + key, auth=self.interceptor)
     if not 200 <= r.status_code < 300:
+      data = r.json()
       raise StoreError(data['code'], data['message'])
 
 class StoreEntry():
