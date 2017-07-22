@@ -3,25 +3,11 @@ import base64
 import json
 import time
 import threading
+from enum import IntEnum
 import asyncio
 import requests
 import arrow
 from .common import API_URL
-
-LEVEL_DEBUG = 0
-LEVEL_INFO = 1
-LEVEL_WARN = 2
-LEVEL_ERROR = 3
-LEVEL_FATAL = 4
-LEVEL_OFF = 5
-
-levels = {
-	LEVEL_DEBUG: "DEBUG",
-	LEVEL_INFO:  "INFO",
-	LEVEL_WARN:  "WARN",
-	LEVEL_ERROR: "ERROR",
-	LEVEL_FATAL: "FATAL",
-}
 
 class _Log():
   def __init__(self, interceptor):
@@ -32,7 +18,7 @@ class _Log():
     self.app_id = ''
     self.app_name = '' 
     self.tags = []
-    self.level = LEVEL_INFO
+    self.level = Level.INFO
     self.batch_size = 60
     self.dispatch_interval = 60
 
@@ -52,19 +38,19 @@ class _Log():
     self.entries.clear()
 
   def debug(self, format, *argv):
-    self._log(LEVEL_DEBUG, format, *argv)
+    self._log(Level.DEBUG, format, *argv)
 
   def info(self, format, *argv):
-    self._log(LEVEL_INFO, format, *argv)
+    self._log(Level.INFO, format, *argv)
     
   def warn(self, format, *argv):
-    self._log(LEVEL_WARN, format, *argv)
+    self._log(Level.WARN, format, *argv)
   
   def error(self, format, *argv):
-    self._log(LEVEL_ERROR, format, *argv)
+    self._log(Level.ERROR, format, *argv)
     
   def fatal(self, format, *argv):
-    self._log(LEVEL_FATAL, format, *argv)
+    self._log(Level.FATAL, format, *argv)
 
   def _log(self, level, format, *argv):
     if level < self.level:
@@ -82,7 +68,7 @@ class _Log():
 		  'app_id': self.app_id,
 		  'app_name': self.app_name,
 		  'tags': self.tags,
-		  'level': levels[level],
+		  'level': level.name,
 		  'message': message,
     })
 
@@ -91,6 +77,14 @@ class _Log():
         self._dispatch()
       except LogError as err:
         print(err)
+
+class Level(IntEnum):
+  DEBUG = 0
+  INFO = 1
+  WARN = 2
+  ERROR = 3
+  FATAL = 4
+  OFF = 5
     
 class LogError(Exception):
   def __init__(self, code, message):
@@ -99,4 +93,3 @@ class LogError(Exception):
 
   def __str__(self):
     return 'log error, code={0}, message={1}'.format(self.code, self.message)
-  
