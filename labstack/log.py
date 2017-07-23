@@ -24,7 +24,10 @@ class _Log():
 
   async def _schedule(self):
     while True:
-      await self._dispatch()
+      try:
+        await self._dispatch()
+      except LogError as err:
+        print('log error: code={}, message={}'.format(err.code, err.message))
       await asyncio.sleep(self.dispatch_interval)
   
   async def _dispatch(self):
@@ -76,7 +79,7 @@ class _Log():
       try:
         self._dispatch()
       except LogError as err:
-        print(err)
+        print('log error: code={}, message={}'.format(err.code, err.message))
 
 class Level(IntEnum):
   DEBUG = 0
