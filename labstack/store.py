@@ -86,5 +86,5 @@ class StoreError(Exception):
     self.message = message
 
   def __str__(self):
-    return 'store error, code={0}, message={1}'.format(self.code, self.message)
+    return self.message
   

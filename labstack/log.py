@@ -92,4 +92,4 @@ class LogError(Exception):
     self.message = message
 
   def __str__(self):
-    return 'log error, code={0}, message={1}'.format(self.code, self.message)
+    return self.message
