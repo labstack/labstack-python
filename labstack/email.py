@@ -4,20 +4,14 @@ import requests
 import json
 from .common import API_URL
 
-def _email_file_from_path(path):
-  with open(path, 'rb') as file:
-    return {
-      'name': os.path.basename(path),
-      'content': base64.b64encode(file.read()).decode('utf-8')
-    }
-
 class _Email():
   def __init__(self, interceptor):
     self.path = '/email'
     self.interceptor = interceptor 
     
   def send(self, message):
-    message._add_files()
+    message._add_inlines()
+    message._add_attachments()
     r = requests.post(API_URL + self.path, auth=self.interceptor, data=message.to_json())
     data = r.json()
     if not 200 <= r.status_code < 300:
@@ -35,6 +29,22 @@ class EmailMessage():
     self.inlines = []
     self.attachments = []
     self.status = ''
+
+  def _add_inlines(self):
+    for inline in self.inlines:
+      with open(inline, 'rb') as file:
+        self._inlines.append({
+          'name': os.path.basename(inline),
+          'content': base64.b64encode(file.read()).decode('utf-8')
+        })
+  
+  def _add_attachments(self):
+    for attachment in self.attachments:
+      with open(attachment, 'rb') as file:
+        self._attachments.append({
+          'name': os.path.basename(attachment),
+          'content': base64.b64encode(file.read()).decode('utf-8')
+        })
 
   def _add_files(self):
     for path in self.inlines:

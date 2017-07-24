@@ -77,7 +77,8 @@ class StoreQueryResponse():
   def from_json(self, response):
     qr = StoreQueryResponse()
     qr.total = response['total']
-    qr.entries = response['entries']
+    for entry in response['entries']:
+      qr.entries.append(StoreEntry.from_json(entry))
     return qr
 
 class StoreError(Exception):

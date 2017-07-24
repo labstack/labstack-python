@@ -33,12 +33,13 @@ class _Log():
   async def _dispatch(self):
     if len(self.entries) == 0:
       return
-
-    r = requests.post(API_URL + self.path, auth=self.interceptor, data=json.dumps(self.entries))
-    if not 200 <= r.status_code < 300:
-      data = r.json()
-      raise LogError(data['code'], data['message'])
-    self.entries.clear()
+    try:
+      r = requests.post(API_URL + self.path, auth=self.interceptor, data=json.dumps(self.entries))
+      if not 200 <= r.status_code < 300:
+        data = r.json()
+        raise LogError(data['code'], data['message'])
+    finally:
+      self.entries.clear()
 
   def debug(self, format, *argv):
     self._log(Level.DEBUG, format, *argv)
