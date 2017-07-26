@@ -19,11 +19,11 @@ class _Email():
     return EmailMessage.from_json(data) 
 
 class EmailMessage():
-  def __init__(self, to, sender, subject):
+  def __init__(self, to, from_, subject):
     self._inlines = []
     self._attachments = []
     self.to = to
-    self.sender = sender 
+    self.from_ = from_
     self.subject = subject
     self.body = ''
     self.inlines = []
@@ -46,12 +46,6 @@ class EmailMessage():
           'content': base64.b64encode(file.read()).decode('utf-8')
         })
 
-  def _add_files(self):
-    for path in self.inlines:
-      self._inlines.append(_email_file_from_path(path))
-    for path in self.attachments:
-      self._attachments.append(_email_file_from_path(path))
-
   def add_inline(self, path):
     self.inlines.append(path)
 
@@ -61,7 +55,7 @@ class EmailMessage():
   def to_json(self):
     return json.dumps({
       'to': self.to,
-      'from': self.sender,
+      'from': self.from_,
       'subject': self.subject,
       'body': self.body,
       'inlines': self._inlines,

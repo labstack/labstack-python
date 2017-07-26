@@ -3,6 +3,15 @@ from .email import _Email
 from .log import _Log
 from .store import _Store
 
+class _Interceptor(requests.auth.AuthBase):
+  def __init__(self, api_key):
+    self.api_key = api_key
+
+  def __call__(self, r):
+    r.headers['Authorization'] = 'Bearer ' + self.api_key
+    r.headers['Content-Type'] = 'application/json; charset=utf-8'
+    return r
+
 class Client():
   def __init__(self, api_key):
     self.interceptor = _Interceptor(api_key)
@@ -21,11 +30,11 @@ class Client():
   def store(self):
     return _Store(self.interceptor)
 
-class _Interceptor(requests.auth.AuthBase):
-  def __init__(self, api_key):
-    self.api_key = api_key
-
-  def __call__(self, r):
-    r.headers['Authorization'] = 'Bearer ' + self.api_key
-    r.headers['Content-Type'] = 'application/json; charset=utf-8'
-    return r
+class SearchParameters():
+  def __init__(self, query=None, query_string=None, since=None, sort=None, size=None, from_=None):
+    self.query = query
+    self.query_string = query_string
+    self.since = since
+    self.sort = since
+    self.size = size 
+    self.from_ = from_

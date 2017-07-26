@@ -17,7 +17,6 @@ class _Log():
     self.entries = []
     self.app_id = ''
     self.app_name = '' 
-    self.tags = []
     self.level = Level.INFO
     self.batch_size = 60
     self.dispatch_interval = 60
@@ -41,22 +40,22 @@ class _Log():
     finally:
       self.entries.clear()
 
-  def debug(self, format, *argv):
-    self._log(Level.DEBUG, format, *argv)
+  def debug(self, fields):
+    self._log(Level.DEBUG, fields)
 
-  def info(self, format, *argv):
-    self._log(Level.INFO, format, *argv)
+  def info(self, fields):
+    self._log(Level.INFO, fields)
     
-  def warn(self, format, *argv):
-    self._log(Level.WARN, format, *argv)
+  def warn(self, fields):
+    self._log(Level.WARN, fields)
   
-  def error(self, format, *argv):
-    self._log(Level.ERROR, format, *argv)
+  def error(self, fields):
+    self._log(Level.ERROR, fields)
     
-  def fatal(self, format, *argv):
-    self._log(Level.FATAL, format, *argv)
+  def fatal(self, fields):
+    self._log(Level.FATAL, fields)
 
-  def _log(self, level, format, *argv):
+  def _log(self, level, fields):
     if level < self.level:
       return
 
@@ -66,15 +65,11 @@ class _Log():
       self._loop.create_task(self._schedule())
       threading.Thread(target=self._loop.run_forever).start()
     
-    message = format.format(*argv)
-    self.entries.append({
-      'time': arrow.now().format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
-		  'app_id': self.app_id,
-		  'app_name': self.app_name,
-		  'tags': self.tags,
-		  'level': level.name,
-		  'message': message,
-    })
+    fields['time'] = arrow.now().format('YYYY-MM-DDTHH:mm:ss.SSSZ')
+    fields['app_id'] = self.app_id
+    fields['app_name'] = self.app_name
+    fields['level'] = level.name
+    self.entries.append(fields)
 
     if len(self.entries) >= self.batch_size:
       try:

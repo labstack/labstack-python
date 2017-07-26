@@ -8,42 +8,43 @@ class _Store():
     self.path = '/store'
     self.interceptor = interceptor 
     
-  def insert(self, key, value):
-    entry = StoreEntry(key, value)
-    r = requests.post(API_URL + self.path, auth=self.interceptor, data=entry.to_json())
+  def insert(self, collection, document):
+    r = requests.post('{}{}/{}'.format(API_URL, self.path, collection), auth=self.interceptor, json=document)
     data = r.json()
     if not 200 <= r.status_code < 300:
       raise StoreError(data['code'], data['message'])
-    return StoreEntry.from_json(data) 
+    return data
 
-  def get(self, key):
-    r = requests.get(API_URL + self.path + '/' + key, auth=self.interceptor)
+  def get(self, collection, id):
+    r = requests.get('{}{}/{}/{}'.format(API_URL, self.path, collection, id), auth=self.interceptor)
     data = r.json()
     if not 200 <= r.status_code < 300:
       raise StoreError(data['code'], data['message'])
-    return StoreEntry.from_json(data) 
+    return data
 
-  def query(self, filters='', limit=None, offset=None):
+  def search(self, collection, query=None, query_string=None, since=None, sort=None, size=None, from_=None):
     params = {
-      'filters': filters,
-      'limit': limit,
-      'offset': offset
+      'query': query,
+      'query_string': query_string,
+      'since': since,
+      'sort': sort,
+      'size': size,
+      'from': from_
     }
-    r = requests.get(API_URL + self.path, auth=self.interceptor, params=params)
+    r = requests.post('{}{}/{}/search'.format(API_URL, self.path, collection), auth=self.interceptor, json=params)
     data = r.json()
     if not 200 <= r.status_code < 300:
       raise StoreError(data['code'], data['message'])
-    return StoreQueryResponse.from_json(data) 
+    return data
 
-  def update(self, key, value):
-    entry = StoreEntry(key, value)
-    r = requests.put(API_URL + self.path + '/' + key, auth=self.interceptor, data=entry.to_json())
+  def update(self, collection, id, document):
+    r = requests.patch('{}{}/{}/{}'.format(API_URL, self.path, collection, id), auth=self.interceptor, json=document)
     if not 200 <= r.status_code < 300:
       data = r.json()
       raise StoreError(data['code'], data['message'])
 
-  def delete(self, key):
-    r = requests.delete(API_URL + self.path + '/' + key, auth=self.interceptor)
+  def delete(self, collection, id):
+    r = requests.delete('{}{}/{}/{}'.format(API_URL, self.path, collection, id), auth=self.interceptor)
     if not 200 <= r.status_code < 300:
       data = r.json()
       raise StoreError(data['code'], data['message'])
@@ -68,18 +69,18 @@ class StoreEntry():
     se.updated_at = entry['updated_at']
     return se
 
-class StoreQueryResponse():
-  def __init__(self):
-    self.total = 0
-    self.entries = []
+# class StoreSearchResponse():
+#   def __init__(self):
+#     self.total = 0
+#     self.documents = []
 
-  @classmethod
-  def from_json(self, response):
-    qr = StoreQueryResponse()
-    qr.total = response['total']
-    for entry in response['entries']:
-      qr.entries.append(StoreEntry.from_json(entry))
-    return qr
+#   @classmethod
+#   def from_json(self, response):
+#     qr = StoreSearchResponse()
+#     qr.total = response['total']
+#     for entry in response['entries']:
+#       qr.documents.append(StoreEntry.from_json(entry))
+#     return qr
 
 class StoreError(Exception):
   def __init__(self, code, message):
