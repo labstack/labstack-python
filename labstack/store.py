@@ -22,16 +22,8 @@ class _Store():
       raise StoreError(data['code'], data['message'])
     return data
 
-  def search(self, collection, query=None, query_string=None, since=None, sort=None, size=None, from_=None):
-    params = {
-      'query': query,
-      'query_string': query_string,
-      'since': since,
-      'sort': sort,
-      'size': size,
-      'from': from_
-    }
-    r = requests.post('{}{}/{}/search'.format(API_URL, self.path, collection), auth=self.interceptor, json=params)
+  def search(self, collection, **kwargs):
+    r = requests.post('{}{}/{}/search'.format(API_URL, self.path, collection), auth=self.interceptor, json=kwargs)
     data = r.json()
     if not 200 <= r.status_code < 300:
       raise StoreError(data['code'], data['message'])

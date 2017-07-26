@@ -29,12 +29,4 @@ class Client():
   
   def store(self):
     return _Store(self.interceptor)
-
-class SearchParameters():
-  def __init__(self, query=None, query_string=None, since=None, sort=None, size=None, from_=None):
-    self.query = query
-    self.query_string = query_string
-    self.since = since
-    self.sort = since
-    self.size = size 
-    self.from_ = from_
+  
