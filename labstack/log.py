@@ -15,9 +15,8 @@ class _Log():
     self.interceptor = interceptor
     self._loop = None
     self.entries = []
-    self.app_id = ''
-    self.app_name = '' 
     self.level = Level.INFO
+    self.fields = {}
     self.batch_size = 60
     self.dispatch_interval = 60
 
@@ -66,8 +65,8 @@ class _Log():
       threading.Thread(target=self._loop.run_forever).start()
     
     fields['time'] = arrow.now().format('YYYY-MM-DDTHH:mm:ss.SSSZ')
-    fields['app_id'] = self.app_id
-    fields['app_name'] = self.app_name
+    for k, v in self.fields.items():
+      fields[k]  = v
     fields['level'] = level.name
     self.entries.append(fields)
 
