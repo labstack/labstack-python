@@ -39,22 +39,22 @@ class _Log():
     finally:
       self.entries.clear()
 
-  def debug(self, fields):
-    self._log(Level.DEBUG, fields)
+  def debug(self, **kwargs):
+    self._log(Level.DEBUG, **kwargs)
 
-  def info(self, fields):
-    self._log(Level.INFO, fields)
+  def info(self, **kwargs):
+    self._log(Level.INFO, **kwargs)
     
-  def warn(self, fields):
-    self._log(Level.WARN, fields)
+  def warn(self, **kwargs):
+    self._log(Level.WARN, **kwargs)
   
-  def error(self, fields):
-    self._log(Level.ERROR, fields)
+  def error(self, **kwargs):
+    self._log(Level.ERROR, **kwargs)
     
-  def fatal(self, fields):
-    self._log(Level.FATAL, fields)
+  def fatal(self, **kwargs):
+    self._log(Level.FATAL, **kwargs)
 
-  def _log(self, level, fields):
+  def _log(self, level, **kwargs):
     if level < self.level:
       return
 
@@ -64,11 +64,11 @@ class _Log():
       self._loop.create_task(self._schedule())
       threading.Thread(target=self._loop.run_forever).start()
     
-    fields['time'] = arrow.now().format('YYYY-MM-DDTHH:mm:ss.SSSZ')
+    kwargs['time'] = arrow.now().format('YYYY-MM-DDTHH:mm:ss.SSSZ')
     for k, v in self.fields.items():
-      fields[k]  = v
-    fields['level'] = level.name
-    self.entries.append(fields)
+      kwargs[k]  = v
+    kwargs['level'] = level.name
+    self.entries.append(kwargs)
 
     if len(self.entries) >= self.batch_size:
       try:
