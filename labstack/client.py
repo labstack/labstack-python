@@ -15,16 +15,12 @@ class _Interceptor(requests.auth.AuthBase):
 class Client():
   def __init__(self, api_key):
     self.interceptor = _Interceptor(api_key)
-    self.app_id = ''
-    self.app_name = ''
 
   def email(self):
     return _Email(self.interceptor)
 
   def log(self):
     log = _Log(self.interceptor)
-    log.app_id = self.app_id
-    log.app_name = self.app_name
     return log
   
   def store(self):
