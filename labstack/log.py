@@ -39,6 +39,9 @@ class _Log():
     finally:
       self.entries.clear()
 
+  def add_fields(self, **kwargs):
+    self.fields.update(kwargs)
+
   def debug(self, **kwargs):
     self._log(Level.DEBUG, **kwargs)
 
