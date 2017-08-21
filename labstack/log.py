@@ -1,34 +1,34 @@
 import os
+import sys
 import base64
 import json
 import time
 import threading
+import traceback
 from enum import IntEnum
-import asyncio
 import requests
 import arrow
+from apscheduler.schedulers.background import BackgroundScheduler
 from .common import API_URL
 
 class _Log():
   def __init__(self, interceptor):
     self.path = '/log'
     self.interceptor = interceptor
-    self._loop = None
+    self._timer = None
     self.entries = []
     self.level = Level.INFO
     self.fields = {}
     self.batch_size = 60
     self.dispatch_interval = 60
 
-  async def _schedule(self):
-    while True:
-      try:
-        await self._dispatch()
-      except LogError as err:
-        print('log error: code={}, message={}'.format(err.code, err.message))
-      await asyncio.sleep(self.dispatch_interval)
-  
-  async def _dispatch(self):
+    # Automatically report uncaught fatal error
+    def excepthook(type, value, trace):
+      self.fatal(message=str(value), stack_trace=''.join(traceback.format_tb(trace)))
+      sys.__excepthook__(type, value, trace)
+    sys.excepthook = excepthook
+
+  def _dispatch(self):
     if len(self.entries) == 0:
       return
     try:
@@ -61,11 +61,10 @@ class _Log():
     if level < self.level:
       return
 
-    if self._loop is None:
-      self._loop = asyncio.new_event_loop()
-      asyncio.set_event_loop(self._loop)
-      self._loop.create_task(self._schedule())
-      threading.Thread(target=self._loop.run_forever).start()
+    if self._timer is None:
+      self.timer = BackgroundScheduler()
+      self.timer.add_job(self._dispatch, 'interval', seconds=self.dispatch_interval)
+      self.timer.start()
     
     kwargs['time'] = arrow.now().format('YYYY-MM-DDTHH:mm:ss.SSSZ')
     for k, v in self.fields.items():
@@ -73,7 +72,7 @@ class _Log():
     kwargs['level'] = level.name
     self.entries.append(kwargs)
 
-    if len(self.entries) >= self.batch_size:
+    if level == Level.FATAL or len(self.entries) >= self.batch_size:
       try:
         self._dispatch()
       except LogError as err:
