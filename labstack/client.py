@@ -1,11 +1,11 @@
 import requests
+from .connect import _Connect 
 from .email import _Email
 from .log import _Log
 from .store import _Store
 
 class _Interceptor(requests.auth.AuthBase):
-  def __init__(self, account_id, api_key):
-    self.account_id = account_id
+  def __init__(self, api_key):
     self.api_key = api_key
 
   def __call__(self, r):
@@ -14,8 +14,13 @@ class _Interceptor(requests.auth.AuthBase):
     return r
 
 class Client():
-  def __init__(self, api_key):
+  def __init__(self, account_id, api_key):
+    self.account_id = account_id
+    self.api_key = api_key
     self.interceptor = _Interceptor(api_key)
+
+  def connect(self, client_id):
+    return _Connect(self.account_id, self.api_key, client_id)
 
   def email(self):
     return _Email(self.interceptor)
