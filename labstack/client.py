@@ -4,7 +4,8 @@ from .log import _Log
 from .store import _Store
 
 class _Interceptor(requests.auth.AuthBase):
-  def __init__(self, api_key):
+  def __init__(self, account_id, api_key):
+    self.account_id = account_id
     self.api_key = api_key
 
   def __call__(self, r):
