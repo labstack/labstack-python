@@ -8,10 +8,14 @@ class _Connect():
     self.client.connect("iot.labstack.com", 1883)
 
   def on_connect(self, handler):
-    self.client.on_connect = handler
+    def on_connect(client, userdata, flags, rc):
+      handler()
+    self.client.on_connect = on_connect
 
   def on_message(self, handler):
-    self.client.on_message = handler
+    def on_message(client, userdata, msg):
+      handler(msg.topic, msg.payload)
+    self.client.on_message = on_message
 
   def publish(self, topic, message):
     self.client.publish('{}/{}'.format(self.account_id, topic), message)
