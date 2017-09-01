@@ -1,6 +1,6 @@
 import paho.mqtt.client as mqtt
 
-class _Connect():
+class _Queue():
   def __init__(self, account_id, api_key, client_id):
     self.account_id = account_id
     self.client = mqtt.Client(client_id=client_id, clean_session=True)
@@ -20,8 +20,11 @@ class _Connect():
   def publish(self, topic, message):
     self.client.publish('{}/{}'.format(self.account_id, topic), message)
 
-  def subscribe(self, topic):
-    self.client.subscribe('{}/{}'.format(self.account_id, topic))
+  def subscribe(self, topic, shared=False):
+    topic = '{}/{}'.format(self.account_id, topic)
+    if shared:
+      topic = '$queue/' + topic
+    self.client.subscribe(topic)
 
   def disconnect(self):
     self.client.disconnect()

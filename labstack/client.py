@@ -1,5 +1,5 @@
 import requests
-from .connect import _Connect 
+from .queue import _Queue
 from .email import _Email
 from .log import _Log
 from .store import _Store
@@ -19,8 +19,8 @@ class Client():
     self.api_key = api_key
     self.interceptor = _Interceptor(api_key)
 
-  def connect(self, client_id):
-    return _Connect(self.account_id, self.api_key, client_id)
+  def queue(self, client_id):
+    return _Queue(self.account_id, self.api_key, client_id)
 
   def email(self):
     return _Email(self.interceptor)
