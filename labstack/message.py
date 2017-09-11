@@ -1,6 +1,6 @@
 import paho.mqtt.client as mqtt
 
-class _Queue():
+class _Message():
   def __init__(self, account_id, api_key, client_id):
     self.account_id = account_id
     self.client = mqtt.Client(client_id=client_id, clean_session=True)
@@ -12,10 +12,10 @@ class _Queue():
       handler()
     self.client.on_connect = on_connect
 
-  def on_message(self, handler):
-    def on_message(client, userdata, msg):
+  def on_data(self, handler):
+    def on_data(client, userdata, msg):
       handler(msg.topic, msg.payload)
-    self.client.on_message = on_message
+    self.client.on_message = on_data
 
   def publish(self, topic, message):
     self.client.publish('{}/{}'.format(self.account_id, topic), message)
