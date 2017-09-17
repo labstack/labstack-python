@@ -8,19 +8,14 @@ import traceback
 from enum import IntEnum
 import requests
 import arrow
-from apscheduler.schedulers.background import BackgroundScheduler
 from .common import API_URL
 
 class _Log():
   def __init__(self, interceptor):
     self.path = '/log'
     self.interceptor = interceptor
-    self._timer = None
-    self.entries = []
     self.level = Level.INFO
     self.fields = {}
-    self.batch_size = 60
-    self.dispatch_interval = 60
 
     # Automatically report uncaught fatal error
     def excepthook(type, value, trace):
@@ -28,16 +23,11 @@ class _Log():
       sys.__excepthook__(type, value, trace)
     sys.excepthook = excepthook
 
-  def _dispatch(self):
-    if len(self.entries) == 0:
-      return
-    try:
-      r = requests.post(API_URL + self.path, auth=self.interceptor, data=json.dumps(self.entries))
-      if not 200 <= r.status_code < 300:
-        data = r.json()
-        raise LogError(data['code'], data['message'])
-    finally:
-      self.entries.clear()
+  def _dispatch(self, entry):
+    r = requests.post(API_URL + self.path, auth=self.interceptor, data=json.dumps(entry))
+    if not 200 <= r.status_code < 300:
+      data = r.json()
+      raise LogError(data['code'], data['message'])
 
   def add_fields(self, **kwargs):
     self.fields.update(kwargs)
@@ -60,23 +50,14 @@ class _Log():
   def _log(self, level, **kwargs):
     if level < self.level:
       return
-
-    if self._timer is None:
-      self.timer = BackgroundScheduler()
-      self.timer.add_job(self._dispatch, 'interval', seconds=self.dispatch_interval)
-      self.timer.start()
     
     kwargs['time'] = arrow.now().format('YYYY-MM-DDTHH:mm:ss.SSSZ')
-    for k, v in self.fields.items():
-      kwargs[k]  = v
     kwargs['level'] = level.name
-    self.entries.append(kwargs)
 
-    if level == Level.FATAL or len(self.entries) >= self.batch_size:
-      try:
-        self._dispatch()
-      except LogError as err:
-        print('log error: code={}, message={}'.format(err.code, err.message))
+    try:
+      self._dispatch(kwargs)
+    except LogError as err:
+      print('log error: code={}, message={}'.format(err.code, err.message))
 
 class Level(IntEnum):
   DEBUG = 0

@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
   name='labstack',
-  version='0.6.7',
+  version='0.7.0',
   description='Official Python client library for the LabStack platform',
   long_description='`<https://github.com/labstack/labstack-python>`_',
   keywords='labstack cube email log mqtt store',
@@ -12,7 +12,6 @@ setup(
   license='MIT',
   packages=['labstack'],
   install_requires=[
-    'apscheduler==3.3.1',
     'arrow==0.10.0',
     'paho-mqtt==1.3.0',
     'requests==2.18.1'
