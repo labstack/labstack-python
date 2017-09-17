@@ -23,7 +23,7 @@ class _Log():
       sys.__excepthook__(type, value, trace)
     sys.excepthook = excepthook
 
-  def _dispatch(self, entry):
+  def _write(self, entry):
     r = requests.post(API_URL + self.path, auth=self.interceptor, data=json.dumps(entry))
     if not 200 <= r.status_code < 300:
       data = r.json()
@@ -51,11 +51,15 @@ class _Log():
     if level < self.level:
       return
     
+    # Log fields
     kwargs['time'] = arrow.now().format('YYYY-MM-DDTHH:mm:ss.SSSZ')
     kwargs['level'] = level.name
+    for k, v in self.fields.items():
+      kwargs[k] = v
 
+    # Write log
     try:
-      self._dispatch(kwargs)
+      self._write(kwargs)
     except LogError as err:
       print('log error: code={}, message={}'.format(err.code, err.message))
 
