@@ -13,15 +13,14 @@
 Create a file `app.py` with the following content:
 
 ```python
-from labstack import Client
+from labstack import Client, JetMessage
 
-client = Client('<ACCOUNT_ID>', '<API_KEY>')
-store = client.store()
-doc = store.insert('users', {
-  name: 'Jack',
-  location: 'Disney'
-})
-print(doc)
+client = Client('ACCOUNT_ID', '<API_KEY>')
+jet = client.jet()
+message = JetMessage('jack@labstack.com', 'LabStack', 'Hello')
+message.body = 'hello'
+message.add_inline('walle.png')
+message = jet.send(message)
 ```
 
 From terminal run your app:
@@ -30,4 +29,4 @@ From terminal run your app:
 python app.py
 ```
 
-## [Docs](https://labstack.com/docs) | [Forum](https://forum.labstack.com)
+## [Documentation](https://labstack.com/docs) | [Forum](https://forum.labstack.com)

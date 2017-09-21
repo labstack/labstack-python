@@ -2,10 +2,10 @@ from setuptools import setup
 
 setup(
   name='labstack',
-  version='0.7.1',
+  version='0.8.0',
   description='Official Python client library for the LabStack platform',
   long_description='`<https://github.com/labstack/labstack-python>`_',
-  keywords='labstack cube email log mqtt store',
+  keywords='labstack, email as a service, http analytics, pub/sub messaging',
   url='https://github.com/labstack/labstack-python',
   author='Vishal Rana',
   author_email='vr@labstack.com',

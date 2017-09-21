@@ -1,8 +1,6 @@
 import requests
-from .message import _Message
-from .email import _Email
-from .log import _Log
-from .store import _Store
+from .hub import _Hub
+from .jet import _Jet
 
 class _Interceptor(requests.auth.AuthBase):
   def __init__(self, api_key):
@@ -19,16 +17,9 @@ class Client():
     self.api_key = api_key
     self.interceptor = _Interceptor(api_key)
 
-  def message(self, client_id):
-    return _Message(self.account_id, self.api_key, client_id)
+  def hub(self, client_id):
+    return _Hub(self.account_id, self.api_key, client_id)
 
-  def email(self):
-    return _Email(self.interceptor)
-
-  def log(self):
-    log = _Log(self.interceptor)
-    return log
-  
-  def store(self):
-    return _Store(self.interceptor)
+  def jet(self):
+    return _Jet(self.interceptor)
   

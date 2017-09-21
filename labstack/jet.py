@@ -4,21 +4,21 @@ import requests
 import json
 from .common import API_URL
 
-class _Email():
+class _Jet():
   def __init__(self, interceptor):
-    self.path = '/email'
+    self.path = '/jet'
     self.interceptor = interceptor 
     
   def send(self, message):
     message._add_inlines()
     message._add_attachments()
-    r = requests.post(API_URL + self.path, auth=self.interceptor, data=message.to_json())
+    r = requests.post('{}{}/send'.format(API_URL, self.path), auth=self.interceptor, data=message.to_json())
     data = r.json()
     if not 200 <= r.status_code < 300:
-      raise EmailError(data['code'], data['message'])
-    return EmailMessage.from_json(data) 
+      raise JetError(data['code'], data['message'])
+    return JetMessage.from_json(data) 
 
-class EmailMessage():
+class JetMessage():
   def __init__(self, to, from_, subject):
     self._inlines = []
     self._attachments = []
@@ -64,13 +64,13 @@ class EmailMessage():
 
   @classmethod
   def from_json(self, message):
-    em = EmailMessage(message['to'], message['from'], message['subject'])
+    em = JetMessage(message['to'], message['from'], message['subject'])
     em.id = message['id']
     em.time = message['time']
     em.status = message['status']
     return em
     
-class EmailError(Exception):
+class JetError(Exception):
   def __init__(self, code, message):
     self.code = code
     self.message = message
