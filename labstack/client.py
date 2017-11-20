@@ -44,6 +44,15 @@ class Client():
       raise APIError(data['code'], data['message'])
     return data
 
+  def email_verify(self, email=None):
+    json = {'email': email}
+    r = requests.post(API_URL + '/email/verify', auth=self.interceptor,
+      json=json)
+    data = r.json()
+    if not 200 <= r.status_code < 300:
+      raise APIError(data['code'], data['message'])
+    return data
+
   def image_compress(self, file=None):
     files = {'file': open(file, 'rb')}
     r = requests.post(API_URL + '/image/compress', auth=self.interceptor, files=files)
@@ -65,6 +74,38 @@ class Client():
     if not 200 <= r.status_code < 300:
       raise APIError(data['code'], data['message'])
     return data  
+  
+  def text_sentiment(self, text=None):
+    json = {'text': text}
+    r = requests.post(API_URL + '/text/sentiment', auth=self.interceptor,
+      json=json)
+    data = r.json()
+    if not 200 <= r.status_code < 300:
+      raise APIError(data['code'], data['message'])
+    return data
+  
+  def text_spell_check(self, text=None):
+    json = {'text': text}
+    r = requests.post(API_URL + '/text/spell-check', auth=self.interceptor,
+      json=json)
+    data = r.json()
+    if not 200 <= r.status_code < 300:
+      raise APIError(data['code'], data['message'])
+    return data
+  
+  def text_summary(self, text=None, url=None, language=None, length=None):
+    json = {
+      'text': text,
+      'url': url,
+      'language': language,
+      'length': length
+    }
+    r = requests.post(API_URL + '/text/summary', auth=self.interceptor,
+      json=json)
+    data = r.json()
+    if not 200 <= r.status_code < 300:
+      raise APIError(data['code'], data['message'])
+    return data
 
 class APIError(Exception):
   def __init__(self, code, message):
