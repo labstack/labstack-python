@@ -15,6 +15,25 @@ class Client():
     self.api_key = api_key
     self.interceptor = _Interceptor(api_key)
 
+  def download(self, id, path):
+    r = requests.get('{}/download/{}'.format(API_URL, id), stream=True)
+    with open(path, 'wb') as f:
+      for chunk in r.iter_content(chunk_size=1024): 
+        if chunk:
+          f.write(chunk)
+          f.flush()
+
+  def barcode_generate(self, format=None, content=None):
+    json = {
+      'format': format,
+      'content': content
+    }
+    r = requests.post('{}/barcode/generate'.format(API_URL), auth=self.interceptor, json=json)
+    data = r.json()
+    if not 200 <= r.status_code < 300:
+      raise APIError(data['code'], data['message'])
+    return data
+
   def image_compress(self, file=None):
     files = {'file': open(file, 'rb')}
     r = requests.post('{}/image/compress'.format(API_URL), auth=self.interceptor, files=files)

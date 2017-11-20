@@ -13,14 +13,15 @@
 Create a file `app.py` with the following content:
 
 ```python
-from labstack import Client, JetMessage
+from labstack import Client, APIError
 
-client = Client('ACCOUNT_ID', '<API_KEY>')
-jet = client.jet()
-message = JetMessage('jack@labstack.com', 'LabStack', 'Hello')
-message.body = 'hello'
-message.add_inline('walle.png')
-message = jet.send(message)
+client = Client('<API_KEY>')
+
+try:
+  response = client.barcode_generate(format='qr_code', content='https://labstack.com')
+  client.download(response['id'], '/tmp/' + response['name'])
+except APIError as error:
+  print(error)
 ```
 
 From terminal run your app:
@@ -29,4 +30,4 @@ From terminal run your app:
 python app.py
 ```
 
-## [Documentation](https://labstack.com/docs) | [Forum](https://forum.labstack.com)
+## [API](https://labstack.com/api) | [Forum](https://forum.labstack.com)

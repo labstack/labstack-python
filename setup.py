@@ -2,18 +2,16 @@ from setuptools import setup
 
 setup(
   name='labstack',
-  version='0.8.0',
-  description='Official Python client library for the LabStack platform',
+  version='0.10.0',
+  description='Official Python client library for the LabStack API',
   long_description='`<https://github.com/labstack/labstack-python>`_',
-  keywords='labstack, email as a service, http analytics, pub/sub messaging',
+  keywords='image compress, image resize, text summary, barcode generate, barcode scan',
   url='https://github.com/labstack/labstack-python',
   author='Vishal Rana',
   author_email='vr@labstack.com',
   license='MIT',
   packages=['labstack'],
   install_requires=[
-    'arrow==0.10.0',
-    'paho-mqtt==1.3.0',
     'requests==2.18.1'
   ],
   classifiers=[
