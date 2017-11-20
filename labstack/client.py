@@ -23,12 +23,22 @@ class Client():
           f.write(chunk)
           f.flush()
 
-  def barcode_generate(self, format=None, content=None):
+  def barcode_generate(self, format=None, content=None, size=None):
     json = {
       'format': format,
-      'content': content
+      'content': content,
+      'size': size
     }
-    r = requests.post('{}/barcode/generate'.format(API_URL), auth=self.interceptor, json=json)
+    r = requests.post(API_URL + '/barcode/generate', auth=self.interceptor,
+      json=json)
+    data = r.json()
+    if not 200 <= r.status_code < 300:
+      raise APIError(data['code'], data['message'])
+    return data
+  
+  def barcode_scan(self, file=None):
+    files = {'file': open(file, 'rb')}
+    r = requests.post(API_URL + '/barcode/scan', auth=self.interceptor, files=files)
     data = r.json()
     if not 200 <= r.status_code < 300:
       raise APIError(data['code'], data['message'])
@@ -36,7 +46,7 @@ class Client():
 
   def image_compress(self, file=None):
     files = {'file': open(file, 'rb')}
-    r = requests.post('{}/image/compress'.format(API_URL), auth=self.interceptor, files=files)
+    r = requests.post(API_URL + '/image/compress', auth=self.interceptor, files=files)
     data = r.json()
     if not 200 <= r.status_code < 300:
       raise APIError(data['code'], data['message'])
