@@ -43,6 +43,18 @@ class Client():
     if not 200 <= r.status_code < 300:
       raise APIError(data['code'], data['message'])
     return data
+  
+  def dns_lookup(self, domain=None, type=None):
+    json = {
+      'domain': domain,
+      'type': type
+    }
+    r = requests.post(API_URL + '/dns/lookup', auth=self.interceptor,
+      json=json)
+    data = r.json()
+    if not 200 <= r.status_code < 300:
+      raise APIError(data['code'], data['message'])
+    return data
 
   def email_verify(self, email=None):
     json = {'email': email}
@@ -75,6 +87,22 @@ class Client():
       raise APIError(data['code'], data['message'])
     return data  
   
+  def pdf_extract_image(self, file=None):
+    files = {'file': open(file, 'rb')}
+    r = requests.post(API_URL + '/pdf/extract-image', auth=self.interceptor, files=files)
+    data = r.json()
+    if not 200 <= r.status_code < 300:
+      raise APIError(data['code'], data['message'])
+    return data
+  
+  def pdf_to_image(self, file=None):
+    files = {'file': open(file, 'rb')}
+    r = requests.post(API_URL + '/pdf/to-image', auth=self.interceptor, files=files)
+    data = r.json()
+    if not 200 <= r.status_code < 300:
+      raise APIError(data['code'], data['message'])
+    return data
+  
   def text_sentiment(self, text=None):
     json = {'text': text}
     r = requests.post(API_URL + '/text/sentiment', auth=self.interceptor,
@@ -101,6 +129,15 @@ class Client():
       'length': length
     }
     r = requests.post(API_URL + '/text/summary', auth=self.interceptor,
+      json=json)
+    data = r.json()
+    if not 200 <= r.status_code < 300:
+      raise APIError(data['code'], data['message'])
+    return data
+
+  def word_lookup(self, word=None):
+    json = {'word': word}
+    r = requests.post(API_URL + '/word/lookup', auth=self.interceptor,
       json=json)
     data = r.json()
     if not 200 <= r.status_code < 300:
