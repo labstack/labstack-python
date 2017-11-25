@@ -87,17 +87,9 @@ class Client():
       raise APIError(data['code'], data['message'])
     return data  
   
-  def pdf_extract_image(self, file=None):
+  def pdf_image(self, file=None):
     files = {'file': open(file, 'rb')}
-    r = requests.post(API_URL + '/pdf/extract-image', auth=self.interceptor, files=files)
-    data = r.json()
-    if not 200 <= r.status_code < 300:
-      raise APIError(data['code'], data['message'])
-    return data
-  
-  def pdf_to_image(self, file=None):
-    files = {'file': open(file, 'rb')}
-    r = requests.post(API_URL + '/pdf/to-image', auth=self.interceptor, files=files)
+    r = requests.post(API_URL + '/pdf/image', auth=self.interceptor, files=files)
     data = r.json()
     if not 200 <= r.status_code < 300:
       raise APIError(data['code'], data['message'])
@@ -135,13 +127,13 @@ class Client():
       raise APIError(data['code'], data['message'])
     return data
   
-  def webpage_to_pdf(self, url=None, size=None, layout=None):
+  def webpage_pdf(self, url=None, size=None, layout=None):
     json = {
       'url': url,
       'size': size,
       'layout': layout
     }
-    r = requests.post(API_URL + '/webpage/to-pdf', auth=self.interceptor,
+    r = requests.post(API_URL + '/webpage/pdf', auth=self.interceptor,
       json=json)
     data = r.json()
     if not 200 <= r.status_code < 300:
