@@ -134,6 +134,19 @@ class Client():
     if not 200 <= r.status_code < 300:
       raise APIError(data['code'], data['message'])
     return data
+  
+  def webpage_to_pdf(self, url=None, size=None, layout=None):
+    json = {
+      'url': url,
+      'size': size,
+      'layout': layout
+    }
+    r = requests.post(API_URL + '/webpage/to-pdf', auth=self.interceptor,
+      json=json)
+    data = r.json()
+    if not 200 <= r.status_code < 300:
+      raise APIError(data['code'], data['message'])
+    return data
 
   def word_lookup(self, word=None):
     json = {'word': word}
