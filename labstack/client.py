@@ -43,6 +43,16 @@ class Client():
     if not 200 <= r.status_code < 300:
       raise APIError(data['code'], data['message'])
     return data
+
+  def currency_exchange(self, base=None):
+    json = {'base': base}
+    r = requests.post(API_URL + '/currency/exchange', auth=self.interceptor,
+      json=json)
+    data = r.json()
+    if not 200 <= r.status_code < 300:
+      raise APIError(data['code'], data['message'])
+    return data
+
   
   def dns_lookup(self, domain=None, type=None):
     json = {
