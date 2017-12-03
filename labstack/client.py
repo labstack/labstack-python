@@ -96,10 +96,36 @@ class Client():
     if not 200 <= r.status_code < 300:
       raise APIError(data['code'], data['message'])
     return data  
-  
-  def pdf_image(self, file=None):
+
+  def pdf_compress(self, file=None, quality=None, dpi=None):
     files = {'file': open(file, 'rb')}
-    r = requests.post(API_URL + '/pdf/image', auth=self.interceptor, files=files)
+    data = {
+      'quality': quality,
+      'dpi': dpi
+    }
+    r = requests.post(API_URL + '/pdf/compress', auth=self.interceptor, files=files, data=data)
+    data = r.json()
+    if not 200 <= r.status_code < 300:
+      raise APIError(data['code'], data['message'])
+    return data
+  
+  def pdf_image(self, file=None, extract=None):
+    files = {'file': open(file, 'rb')}
+    data = {
+      'extract': extract
+    }
+    r = requests.post(API_URL + '/pdf/image', auth=self.interceptor, files=files, data=data)
+    data = r.json()
+    if not 200 <= r.status_code < 300:
+      raise APIError(data['code'], data['message'])
+    return data
+
+  def pdf_split(self, file=None, pages=None):
+    files = {'file': open(file, 'rb')}
+    data = {
+      'pages': pages 
+    }
+    r = requests.post(API_URL + '/pdf/split', auth=self.interceptor, files=files, data=data)
     data = r.json()
     if not 200 <= r.status_code < 300:
       raise APIError(data['code'], data['message'])
