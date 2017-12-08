@@ -97,13 +97,9 @@ class Client():
       raise APIError(data['code'], data['message'])
     return data  
 
-  def pdf_compress(self, file=None, quality=None, dpi=None):
+  def pdf_compress(self, file=None):
     files = {'file': open(file, 'rb')}
-    data = {
-      'quality': quality,
-      'dpi': dpi
-    }
-    r = requests.post(API_URL + '/pdf/compress', auth=self.interceptor, files=files, data=data)
+    r = requests.post(API_URL + '/pdf/compress', auth=self.interceptor, files=files)
     data = r.json()
     if not 200 <= r.status_code < 300:
       raise APIError(data['code'], data['message'])
