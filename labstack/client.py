@@ -83,14 +83,33 @@ class Client():
       raise APIError(data['code'], data['message'])
     return data
 
-  def image_resize(self, file=None, width=None, height=None, crop=None):
+  def image_resize(self, file=None, width=None, height=None, format=None):
     files = {'file': open(file, 'rb')}
     data = {
       'width': width,
       'height': height,
-      'crop': crop
+      'format': format
     }
     r = requests.post('{}/image/resize'.format(API_URL), auth=self.interceptor, 
+      files=files, data=data)
+    data = r.json()
+    if not 200 <= r.status_code < 300:
+      raise APIError(data['code'], data['message'])
+    return data
+
+  def image_watermark(self, file=None, text=None, font=None, size=None, color=None, opacity=None,
+    position=None, margin=None):
+    files = {'file': open(file, 'rb')}
+    data = {
+      'text': text, 
+      'font': font,
+      'size': size,
+      'color': color,
+      'opacity': opacity,
+      'position': position,
+      'margin': margin
+    }
+    r = requests.post('{}/image/watermark'.format(API_URL), auth=self.interceptor, 
       files=files, data=data)
     data = r.json()
     if not 200 <= r.status_code < 300:
