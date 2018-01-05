@@ -155,9 +155,9 @@ class Client():
       raise APIError(data['code'], data['message'])
     return data
   
-  def text_spell_check(self, text=None):
+  def text_spellcheck(self, text=None):
     json = {'text': text}
-    r = requests.post(API_URL + '/text/spell-check', auth=self.interceptor,
+    r = requests.post(API_URL + '/text/spellcheck', auth=self.interceptor,
       json=json)
     data = r.json()
     if not 200 <= r.status_code < 300:
