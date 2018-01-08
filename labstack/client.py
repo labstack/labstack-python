@@ -15,6 +15,9 @@ class Client():
     self.api_key = api_key
     self.interceptor = _Interceptor(api_key)
 
+  def _error(r):
+    return not 200 <= r.status_code < 300
+
   def download(self, id, path):
     r = requests.get('{}/download/{}'.format(API_URL, id), stream=True)
     with open(path, 'wb') as f:
@@ -32,7 +35,7 @@ class Client():
     r = requests.post(API_URL + '/barcode/generate', auth=self.interceptor,
       json=json)
     data = r.json()
-    if not 200 <= r.status_code < 300:
+    if self._error(r):
       raise APIError(data['code'], data['message'])
     return data
   
@@ -40,16 +43,16 @@ class Client():
     files = {'file': open(file, 'rb')}
     r = requests.post(API_URL + '/barcode/scan', auth=self.interceptor, files=files)
     data = r.json()
-    if not 200 <= r.status_code < 300:
+    if self._error(r):
       raise APIError(data['code'], data['message'])
     return data
 
-  def currency_exchange(self, base=None):
+  def currency_convert(self, base=None):
     json = {'base': base}
-    r = requests.post(API_URL + '/currency/exchange', auth=self.interceptor,
+    r = requests.post(API_URL + '/currency/convert', auth=self.interceptor,
       json=json)
     data = r.json()
-    if not 200 <= r.status_code < 300:
+    if self._error(r):
       raise APIError(data['code'], data['message'])
     return data
 
@@ -62,7 +65,7 @@ class Client():
     r = requests.post(API_URL + '/dns/lookup', auth=self.interceptor,
       json=json)
     data = r.json()
-    if not 200 <= r.status_code < 300:
+    if self._error(r):
       raise APIError(data['code'], data['message'])
     return data
 
@@ -71,7 +74,7 @@ class Client():
     r = requests.post(API_URL + '/email/verify', auth=self.interceptor,
       json=json)
     data = r.json()
-    if not 200 <= r.status_code < 300:
+    if self._error(r):
       raise APIError(data['code'], data['message'])
     return data
 
@@ -79,7 +82,7 @@ class Client():
     files = {'file': open(file, 'rb')}
     r = requests.post(API_URL + '/image/compress', auth=self.interceptor, files=files)
     data = r.json()
-    if not 200 <= r.status_code < 300:
+    if self._error(r):
       raise APIError(data['code'], data['message'])
     return data
 
@@ -93,7 +96,7 @@ class Client():
     r = requests.post('{}/image/resize'.format(API_URL), auth=self.interceptor, 
       files=files, data=data)
     data = r.json()
-    if not 200 <= r.status_code < 300:
+    if self._error(r):
       raise APIError(data['code'], data['message'])
     return data
 
@@ -112,7 +115,7 @@ class Client():
     r = requests.post('{}/image/watermark'.format(API_URL), auth=self.interceptor, 
       files=files, data=data)
     data = r.json()
-    if not 200 <= r.status_code < 300:
+    if self._error(r):
       raise APIError(data['code'], data['message'])
     return data  
 
@@ -120,7 +123,7 @@ class Client():
     files = {'file': open(file, 'rb')}
     r = requests.post(API_URL + '/pdf/compress', auth=self.interceptor, files=files)
     data = r.json()
-    if not 200 <= r.status_code < 300:
+    if self._error(r):
       raise APIError(data['code'], data['message'])
     return data
   
@@ -131,7 +134,7 @@ class Client():
     }
     r = requests.post(API_URL + '/pdf/image', auth=self.interceptor, files=files, data=data)
     data = r.json()
-    if not 200 <= r.status_code < 300:
+    if self._error(r):
       raise APIError(data['code'], data['message'])
     return data
 
@@ -142,7 +145,7 @@ class Client():
     }
     r = requests.post(API_URL + '/pdf/split', auth=self.interceptor, files=files, data=data)
     data = r.json()
-    if not 200 <= r.status_code < 300:
+    if self._error(r):
       raise APIError(data['code'], data['message'])
     return data
   
@@ -151,7 +154,7 @@ class Client():
     r = requests.post(API_URL + '/text/sentiment', auth=self.interceptor,
       json=json)
     data = r.json()
-    if not 200 <= r.status_code < 300:
+    if self._error(r):
       raise APIError(data['code'], data['message'])
     return data
   
@@ -160,7 +163,7 @@ class Client():
     r = requests.post(API_URL + '/text/spellcheck', auth=self.interceptor,
       json=json)
     data = r.json()
-    if not 200 <= r.status_code < 300:
+    if self._error(r):
       raise APIError(data['code'], data['message'])
     return data
   
@@ -174,7 +177,7 @@ class Client():
     r = requests.post(API_URL + '/text/summary', auth=self.interceptor,
       json=json)
     data = r.json()
-    if not 200 <= r.status_code < 300:
+    if self._error(r):
       raise APIError(data['code'], data['message'])
     return data
   
@@ -187,7 +190,7 @@ class Client():
     r = requests.post(API_URL + '/webpage/pdf', auth=self.interceptor,
       json=json)
     data = r.json()
-    if not 200 <= r.status_code < 300:
+    if self._error(r):
       raise APIError(data['code'], data['message'])
     return data
 
@@ -196,7 +199,7 @@ class Client():
     r = requests.post(API_URL + '/word/lookup', auth=self.interceptor,
       json=json)
     data = r.json()
-    if not 200 <= r.status_code < 300:
+    if self._error(r):
       raise APIError(data['code'], data['message'])
     return data
 
