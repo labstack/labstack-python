@@ -77,6 +77,43 @@ class Client():
     if self._error(r):
       raise APIError(data['code'], data['message'])
     return data
+  
+  def geocode_address(self, location=None, longitude=None, latitude=None, osm_tag=None, limit=None):
+    json = {
+      'location': location,
+      'longitude': longitude,
+      'latitude': latitude,
+      'osm_tag': osm_tag,
+      'limit': limit
+    }
+    r = requests.post(API_URL + '/geocode/address', auth=self.interceptor,
+      json=json)
+    data = r.json()
+    if self._error(r):
+      raise APIError(data['code'], data['message'])
+    return data
+  
+  def geocode_ip(self, ip=None):
+    json = {'ip': ip}
+    r = requests.post(API_URL + '/geocode/ip', auth=self.interceptor,
+      json=json)
+    data = r.json()
+    if self._error(r):
+      raise APIError(data['code'], data['message'])
+    return data
+  
+  def geocode_reverse(self, longitude=None, latitude=None, limit=None):
+    json = {
+      'longitude': longitude,
+      'latitude': latitude,
+      'limit': limit
+    }
+    r = requests.post(API_URL + '/geocode/reverse', auth=self.interceptor,
+      json=json)
+    data = r.json()
+    if self._error(r):
+      raise APIError(data['code'], data['message'])
+    return data
 
   def image_compress(self, file=None):
     files = {'file': open(file, 'rb')}
