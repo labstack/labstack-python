@@ -6,4 +6,4 @@
 
 `pip install labstack`
 
-## [API](https://labstack.com/api) | [Forum](https://forum.labstack.com)
+## [Docs](https://labstack.com/docs) | [Forum](https://forum.labstack.com)
