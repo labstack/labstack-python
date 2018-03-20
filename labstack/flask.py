@@ -1,4 +1,3 @@
-import socket
 from flask import request, g
 from .cube import Cube
 from .util import strip_port
