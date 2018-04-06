@@ -17,6 +17,7 @@ class Cube():
         self.batch_size = batch_size
         self.dispatch_interval = dispatch_interval
         self.tags = tags
+        self.start_time = time.time()
         self.uptime = 0
         self.cpu = 0.0
         self.memory = 0
@@ -26,7 +27,7 @@ class Cube():
         
         def system():
             p = psutil.Process(os.getpid())
-            self.uptime = int(datetime.now().timestamp() - p.create_time())
+            self.uptime = int(time.time() - self.start_time)
             self.cpu = p.cpu_percent()
             self.memory = p.memory_full_info().rss
 
