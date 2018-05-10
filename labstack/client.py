@@ -11,7 +11,7 @@ class _Interceptor(requests.auth.AuthBase):
     return r
 
 class Client():
-  def __init__(self, account_id, api_key):
+  def __init__(self, api_key):
     self.api_key = api_key
     self.interceptor = _Interceptor(api_key)
 

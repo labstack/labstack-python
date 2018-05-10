@@ -15,7 +15,7 @@ Create a file `app.py` with the following content:
 ```python
 from labstack import Client, APIError
 
-client = Client('<ACCOUNT_ID>', '<API_KEY>')
+client = Client('<API_KEY>')
 
 try:
   response = client.barcode_generate(format='qr_code', content='https://labstack.com')
