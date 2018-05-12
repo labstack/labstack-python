@@ -15,11 +15,12 @@ Create a file `app.py` with the following content:
 ```python
 from labstack import Client, APIError
 
-client = Client('<API_KEY>')
+client = new Client('<API_KEY>')
+geocode = client.geocode()
 
 try:
-  response = client.barcode_generate(format='qr_code', content='https://labstack.com')
-  client.download(response['id'], '/tmp/' + response['name'])
+  response = geocode.address('eiffel tower')
+  print(response)
 except APIError as error:
   print(error)
 ```
