@@ -4,11 +4,11 @@ class Currency():
   def __init__(self, client):
     self.client = client 
 
-  def convert(self, from_, to, amount):
+  def convert(self, amount, from_, to):
     return self.client._request('GET', '/currency/convert', params={
+      'amount': amount,
       'from': from_,
-      'to': to,
-      'amount': amount
+      'to': to
     })
 
   def rates(self, base):
