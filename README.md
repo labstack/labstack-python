@@ -31,4 +31,4 @@ From terminal run your app:
 python app.py
 ```
 
-## [Docs](https://labstack.com/docs/api) | [Forum](https://forum.labstack.com)
+## [Docs](https://labstack.com/docs) | [Forum](https://forum.labstack.com)
