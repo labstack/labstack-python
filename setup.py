@@ -2,8 +2,8 @@ from setuptools import setup
 
 setup(
   name='labstack',
-  version='0.31.3',
-  description='Official Python client library for the LabStack API',
+  version='0.31.4',
+  description='Official Python client library for the LabStack platform',
   long_description='`<https://github.com/labstack/labstack-python>`_',
   keywords='image compress, image resize, text summary, barcode generate, barcode scan',
   url='https://github.com/labstack/labstack-python',
@@ -15,7 +15,7 @@ setup(
     'requests==2.18.1'
   ],
   classifiers=[
-      'Programming Language :: Python :: 3.5',
-      'Programming Language :: Python :: 3.6'
+    'Programming Language :: Python :: 3.5',
+    'Programming Language :: Python :: 3.6'
   ]
 )
