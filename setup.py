@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
   name='labstack',
-  version='0.31.5',
+  version='0.31.6',
   description='Official Python client library for the LabStack platform',
   long_description='`<https://github.com/labstack/labstack-python>`_',
   keywords='image compress, image resize, text summary, barcode generate, barcode scan',

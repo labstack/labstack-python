@@ -18,7 +18,7 @@ class Hub():
     def on_connect(client, userdata, flags, rc):
       if handler is not None:
         handler()
-    self.client.on_connect = on_connect 
+    self.client.on_connect = on_connect
 
   def publish(self, topic, message):
     self.client.publish('{}/{}'.format(self.account_id, topic), message)
@@ -32,7 +32,7 @@ class Hub():
     self.handlers[topic] = handler
 
   def unsubscribe(self, topic):
-    self.client.unsubscribe(topic)
+    self.client.unsubscribe('{}/{}'.format(self.account_id, topic))
 
   def disconnect(self):
     self.client.loop_stop()
