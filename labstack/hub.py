@@ -1,4 +1,3 @@
-import signal
 import time
 import paho.mqtt.client as mqtt
 
@@ -12,15 +11,13 @@ class Hub():
     def handler(client, userdata, msg):
       self.handlers[msg.topic](msg.payload)
     self.client.on_message = handler
-    self._run = True
-    signal.signal(signal.SIGINT, self._stop)
-    signal.signal(signal.SIGTERM, self._stop)
   
   def connect(self, handler=None):
     self.client.connect("hub.labstack.com", 1883)
     self.client.loop_start()
     def on_connect(client, userdata, flags, rc):
-      handler()
+      if handler is not None:
+        handler()
     self.client.on_connect = on_connect 
 
   def publish(self, topic, message):
@@ -42,9 +39,8 @@ class Hub():
     self.client.disconnect()
 
   def run(self):
-    while self._run:
-      time.sleep(1)
-
-  def _stop(self, signum, frame):
-    self._run = False
-    self.disconnect()
+    try:
+      while True:
+        time.sleep(1)
+    except (KeyboardInterrupt):
+      pass
