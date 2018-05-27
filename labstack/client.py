@@ -1,7 +1,7 @@
 import requests
 from .currency import Currency
 from .geocode import Geocode 
-from .post import Post 
+from .email import Email 
 from .watermark import Watermark 
 from .webpage import Webpage 
 
@@ -37,8 +37,8 @@ class Client():
   def geocode(self):
     return Geocode(self)
 
-  def post(self):
-    return Post(self)
+  def email(self):
+    return Email(self)
   
   def watermark(self):
     return Watermark(self)
