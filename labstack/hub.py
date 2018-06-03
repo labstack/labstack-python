@@ -2,9 +2,9 @@ import time
 import paho.mqtt.client as mqtt
 
 class Hub():
-  def __init__(self, account_id, api_key, device_id=None, message_handler=None):
+  def __init__(self, account_id, api_key, device_id, message_handler=None):
     self.account_id = account_id
-    self.client = mqtt.Client(client_id=device_id, clean_session=True)
+    self.client = mqtt.Client(client_id=self._normalize_device_id(device_id), clean_session=True)
     self.client.username_pw_set(account_id, api_key)
     # self.client.tls_set(ca_certs='labstack.com/cert.pem')
     self.handlers = {}
@@ -17,11 +17,14 @@ class Hub():
         h(topic, msg.payload)
     self.client.on_message = handler
 
-  def _normalize_topic(self, topic):
-    return '{}/{}'.format(self.account_id, topic)
+  def _normalize_device_id(self, id):
+    return '{}:{}'.format(self.account_id, id)
+
+  def _normalize_topic(self, name):
+    return '{}/{}'.format(self.account_id, name)
   
-  def _denormalize_topic(self, topic):
-    return topic.lstrip(self.account_id + '/')
+  def _denormalize_topic(self, name):
+    return name.lstrip(self.account_id + '/')
   
   def connect(self, handler=None):
     self.client.connect("hub.labstack.com", 1883)
