@@ -13,7 +13,7 @@
 Create a file `app.py` with the following content:
 
 ```python
-from labstack import Client, APIError
+from labstack import Client, LabStackError
 
 client = new Client('<API_KEY>')
 geocode = client.geocode()
