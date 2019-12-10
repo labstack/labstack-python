@@ -16,7 +16,7 @@ class TestDomain(unittest.TestCase):
 
     def test_search(self):
         response = self.s.search({
-            'domain': 'twilio.com'
+            'q': 'twilio'
         })
         self.assertNotEqual(len(response['results']), 0)
 

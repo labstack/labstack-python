@@ -11,8 +11,8 @@ class DomainService():
                                     format(self.url, request['type'], request['domain']))
 
     def search(self, request):
-        return self.client._request('GET', '{}/search/{}'.
-                                    format(self.url, request['domain']))
+        return self.client._request('GET', '{}/search'.
+                                    format(self.url, params={'q': request['q']}))
 
     def status(self, request):
         return self.client._request('GET', '{}/status/{}'.
