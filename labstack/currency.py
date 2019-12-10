@@ -13,3 +13,6 @@ class CurrencyService():
 
     def list(self, request):
         return self.client._request('GET', '{}/list'.format(self.url))
+
+    def rates(self, request):
+        return self.client._request('GET', '{}/rates'.format(self.url))

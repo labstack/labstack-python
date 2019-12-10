@@ -18,3 +18,7 @@ class TestCurrency(unittest.TestCase):
     def test_list(self):
         response = self.s.list({})
         self.assertNotEqual(len(response['currencies']), 0)
+
+    def test_rates(self):
+        response = self.s.rates({})
+        self.assertNotEqual(len(response['rates']), 0)
