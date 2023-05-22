@@ -12,7 +12,7 @@ setup(
     license='MIT',
     packages=['labstack'],
     install_requires=[
-        'requests==2.22.0'
+        'requests==2.31.0'
     ],
     classifiers=[
         'Programming Language :: Python :: 3.6',
